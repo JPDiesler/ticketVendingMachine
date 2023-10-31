@@ -3,25 +3,32 @@ public class App {
         double value = 1462.88;
         calculateMoneyOutput(value);
     }
-
+    /*
+     * Calculates the representation of a value in the euro currencysysten.
+     * Converts the input into cents, to avoid a wired issue with rounding....
+     * Tries to subtract the greatest possible value from the give input, then
+     * adds one to the counter. If the resukt of the subtarct is negative, add count
+     * and value to result string and repeat with the next smaller value.
+     * If the result of the subtarct is 0 the algorithm is finished
+     */
     public static void calculateMoneyOutput(double input){
+        //Convert to cents to avoid rounding errors by Java....
         int amount = (int)(input * 100);
-        double[] values = {0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500};
-        int[] asCents = {1,2,5,10,20,50,100,200,500,1000,2000,5000,10000,20000,50000};
-        String result = "";
-        int count = 0;
-        for (int i = values.length-1; i >= 0; i--){
-            double value = values[i];
-            int cent = asCents[i];
-            count = 0;
-            while (amount - cent >= 0){
-                amount -= cent;
-                count++;
-            }
-            if (count >0){
-                result += count + "x "+value+"€; ";
-            } 
+        int amountInCents = (int) (input * 100);
+    
+    int[] denominationsInCents = {50000, 20000, 10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5, 2, 1};
+    String result = "";
+
+    for (int i = 0; i < denominationsInCents.length; i++) {
+        int denomination = denominationsInCents[i];
+        int count = amountInCents / denomination;
+        
+        if (count > 0) {
+            result += count + "x " + (denomination / 100.0) + "€; ";
+            amountInCents %= denomination; // Update the remaining amount
         }
-        System.out.println(result);
+    }
+    
+    System.out.println(result);
     }
 }
