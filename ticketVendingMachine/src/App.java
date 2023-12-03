@@ -3,11 +3,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 public class App {
 
-    //Variables for colored console output
-    private static String ANSI_RED = "\u001B[31m";
-    private static String ANSI_GREEN = "\u001B[32m";
-    private static String ANSI_BLUE = "\u001B[34m";
-    private static String ANSI_RESET = "\u001B[0m";
+    //Constants for prices, any changes here will apply to tvm
+    private static final Double PRICE_A = 2.50;
+    private static final Double PRICE_B = 3.70;
+    private static final Double PRICE_C = 5.20;
+    private static final Double[] PRICES = {PRICE_A, PRICE_B, PRICE_C};
+
+    //Constants for colored console output
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_BLUE = "\u001B[34m";
+    private static final String ANSI_RESET = "\u001B[0m";
+
 
     public static void main(String[] args) {
 
@@ -17,6 +24,9 @@ public class App {
             while(true){
             printSuccess("Welcome to FDS ticketVendingMachine!");
             printSuccess("We sell tickets for your train ride.");
+            System.out.println();
+            printInfo("FDS_TicketVendingMachine can be shutdown by hitting Ctrl+C");
+            System.out.println();
             double value = ticketSelectionProcess(inputScanner);
             double overpay = paymentProcess(inputScanner, value);
             handleOverpayment(inputScanner, overpay);
@@ -29,10 +39,7 @@ public class App {
         }
         } catch (Exception e) {
             printInfo("FDS ticket vending machine will shut down!");
-            System.out.println(e);
         }
-        
-        
         inputScanner.close();
     }
 
@@ -40,10 +47,11 @@ public class App {
      * Displays the tickets available for selection
      */
     public static void displayTicketOptions(){
+        String[] Zones = {"A","B","C"};
         printInfo("Available tickets:");
-        System.out.println("A: 2,50€");
-        System.out.println("B: 3,70€");
-        System.out.println("C: 4,50€");
+        for (int i = 0; i < PRICES.length; i++) {
+            System.out.println("Zone "+Zones[i]+": "+String.format("%.2f€",PRICES[i]));
+        }
     }
 
     /*
@@ -75,7 +83,8 @@ public class App {
      */
     public static double ticketSelectionProcess(Scanner inputScanner){
         double total = 0;
-        while(true){
+        boolean exit = false;
+        while(!exit){
             displayTicketOptions();
             System.out.println("Enter A,B or C:");
             String userInput = inputScanner.nextLine();
@@ -83,15 +92,15 @@ public class App {
             double ticketprice = 0;
             switch (userInput) {
                 case "A":
-                    ticketprice = 2.5;
+                    ticketprice = PRICES[0];
                     success = true;
                     break;
                 case "B":
-                    ticketprice = 3.7;
+                    ticketprice = PRICES[1];
                     success = true;
                     break;
                 case "C":
-                    ticketprice = 4.50;
+                    ticketprice = PRICES[2];
                     success = true;
                     break;
                 default:
@@ -138,7 +147,7 @@ public class App {
                     System.out.println();
                     printInfo("No more tickets to add");
                     System.out.println();
-                    break;
+                    exit = true;
                 }else{
                     System.out.println();
                     printInfo("Adding more tickets");
